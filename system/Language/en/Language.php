@@ -1,17 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
 /**
- * This file is part of CodeIgniter 4 framework.
+ * Language system language strings.
  *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
+ * @package    CodeIgniter
+ * @author     CodeIgniter Dev Team
+ * @copyright  2019 CodeIgniter Foundation
+ * @license    https://opensource.org/licenses/MIT	MIT License
+ * @link       https://codeigniter.com
+ * @since      Version 4.0.0
+ * @filesource
  *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * @codeCoverageIgnore
  */
 
-// "Language" language settings
 return [
-    'invalidMessageFormat' => 'Invalid message format: "{0}", args: "{1}"',
+   'languageGetLineInvalidArgumentException' => 'Get line must be a string or array of strings.',
 ];

@@ -33,19 +33,11 @@
 <h3>Defined Routes</h3>
 
 <table>
-    <thead>
-        <tr>
-            <th>Method</th>
-            <th>Route</th>
-            <th>Handler</th>
-        </tr>
-    </thead>
     <tbody>
     {routes}
         <tr>
-            <td>{method}</td>
-            <td data-debugbar-route="{method}">{route}</td>
-            <td>{handler}</td>
+            <td>{from}</td>
+            <td>{to}</td>
         </tr>
     {/routes}
     </tbody>

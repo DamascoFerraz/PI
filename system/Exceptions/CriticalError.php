@@ -1,21 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php namespace CodeIgniter\Exceptions;
 
 /**
- * This file is part of CodeIgniter 4 framework.
- *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * Error: Critical conditions, like component unavailble, etc.
  */
 
-namespace CodeIgniter\Exceptions;
-
-/**
- * Error: Critical conditions, like component unavailable, etc.
- */
-class CriticalError extends RuntimeException
+class CriticalError extends \Error
 {
+
 }

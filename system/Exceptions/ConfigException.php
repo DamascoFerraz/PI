@@ -1,36 +1,21 @@
-<?php
-
-declare(strict_types=1);
+<?php namespace CodeIgniter\Exceptions;
 
 /**
- * This file is part of CodeIgniter 4 framework.
- *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * Exception for automatic logging.
  */
 
-namespace CodeIgniter\Exceptions;
-
-/**
- * Exception thrown if the value of the Config class is invalid or the type is
- * incorrect.
- */
-class ConfigException extends RuntimeException implements HasExitCodeInterface
+class ConfigException extends CriticalError
 {
-    use DebugTraceableTrait;
 
-    public function getExitCode(): int
-    {
-        return EXIT_CONFIG;
-    }
+	/**
+	 * Error code
+	 *
+	 * @var integer
+	 */
+	protected $code = 3;
 
-    /**
-     * @return static
-     */
-    public static function forDisabledMigrations()
-    {
-        return new static(lang('Migrations.disabled'));
-    }
+	public static function forDisabledMigrations()
+	{
+		throw new static(lang('Migrations.disabled'));
+	}
 }

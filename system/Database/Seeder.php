@@ -1,195 +1,228 @@
 <?php
 
-declare(strict_types=1);
-
 /**
- * This file is part of CodeIgniter 4 framework.
+ * CodeIgniter
  *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
+ * An open source application development framework for PHP
  *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This content is released under the MIT License (MIT)
+ *
+ * Copyright (c) 2014-2019 British Columbia Institute of Technology
+ * Copyright (c) 2019 CodeIgniter Foundation
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @package    CodeIgniter
+ * @author     CodeIgniter Dev Team
+ * @copyright  2019 CodeIgniter Foundation
+ * @license    https://opensource.org/licenses/MIT	MIT License
+ * @link       https://codeigniter.com
+ * @since      Version 4.0.0
+ * @filesource
  */
 
 namespace CodeIgniter\Database;
 
 use CodeIgniter\CLI\CLI;
-use CodeIgniter\Exceptions\InvalidArgumentException;
-use Config\Database;
-use Faker\Factory;
-use Faker\Generator;
+use CodeIgniter\Config\BaseConfig;
 
 /**
  * Class Seeder
  */
 class Seeder
 {
-    /**
-     * The name of the database group to use.
-     *
-     * @var non-empty-string
-     */
-    protected $DBGroup;
 
-    /**
-     * Where we can find the Seed files.
-     *
-     * @var string
-     */
-    protected $seedPath;
+	/**
+	 * The name of the database group to use.
+	 *
+	 * @var string
+	 */
+	protected $DBGroup;
 
-    /**
-     * An instance of the main Database configuration
-     *
-     * @var Database
-     */
-    protected $config;
+	/**
+	 * Where we can find the Seed files.
+	 *
+	 * @var string
+	 */
+	protected $seedPath;
 
-    /**
-     * Database Connection instance
-     *
-     * @var BaseConnection
-     */
-    protected $db;
+	/**
+	 * An instance of the main Database configuration
+	 *
+	 * @var BaseConfig
+	 */
+	protected $config;
 
-    /**
-     * Database Forge instance.
-     *
-     * @var Forge
-     */
-    protected $forge;
+	/**
+	 * Database Connection instance
+	 *
+	 * @var BaseConnection
+	 */
+	protected $db;
 
-    /**
-     * If true, will not display CLI messages.
-     *
-     * @var bool
-     */
-    protected $silent = false;
+	/**
+	 * Database Forge instance.
+	 *
+	 * @var Forge
+	 */
+	protected $forge;
 
-    /**
-     * Faker Generator instance.
-     *
-     * @deprecated
-     */
-    private static ?Generator $faker = null;
+	/**
+	 * If true, will not display CLI messages.
+	 *
+	 * @var boolean
+	 */
+	protected $silent = false;
 
-    /**
-     * Seeder constructor.
-     */
-    public function __construct(Database $config, ?BaseConnection $db = null)
-    {
-        $this->seedPath = $config->filesPath ?? APPPATH . 'Database/';
+	//--------------------------------------------------------------------
 
-        if ($this->seedPath === '') {
-            throw new InvalidArgumentException('Invalid filesPath set in the Config\Database.');
-        }
+	/**
+	 * Seeder constructor.
+	 *
+	 * @param BaseConfig     $config
+	 * @param BaseConnection $db
+	 */
+	public function __construct(BaseConfig $config, BaseConnection $db = null)
+	{
+		$this->seedPath = $config->filesPath ?? APPPATH . 'Database/';
 
-        $this->seedPath = rtrim($this->seedPath, '\\/') . '/Seeds/';
+		if (empty($this->seedPath))
+		{
+			throw new \InvalidArgumentException('Invalid filesPath set in the Config\Database.');
+		}
 
-        if (! is_dir($this->seedPath)) {
-            throw new InvalidArgumentException('Unable to locate the seeds directory. Please check Config\Database::filesPath');
-        }
+		$this->seedPath = rtrim($this->seedPath, '/') . '/Seeds/';
 
-        $this->config = &$config;
+		if (! is_dir($this->seedPath))
+		{
+			throw new \InvalidArgumentException('Unable to locate the seeds directory. Please check Config\Database::filesPath');
+		}
 
-        $db ??= Database::connect($this->DBGroup);
+		$this->config = & $config;
 
-        $this->db    = $db;
-        $this->forge = Database::forge($this->DBGroup);
-    }
+		if (is_null($db))
+		{
+			$db = \Config\Database::connect($this->DBGroup);
+		}
 
-    /**
-     * Gets the Faker Generator instance.
-     *
-     * @deprecated
-     */
-    public static function faker(): ?Generator
-    {
-        if (! self::$faker instanceof Generator && class_exists(Factory::class)) {
-            self::$faker = Factory::create();
-        }
+		$this->db = & $db;
+	}
 
-        return self::$faker;
-    }
+	//--------------------------------------------------------------------
 
-    /**
-     * Loads the specified seeder and runs it.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException
-     */
-    public function call(string $class)
-    {
-        $class = trim($class);
+	/**
+	 * Loads the specified seeder and runs it.
+	 *
+	 * @param string $class
+	 *
+	 * @throws \InvalidArgumentException
+	 */
+	public function call(string $class)
+	{
+		if (empty($class))
+		{
+			throw new \InvalidArgumentException('No Seeder was specified.');
+		}
 
-        if ($class === '') {
-            throw new InvalidArgumentException('No seeder was specified.');
-        }
+		$path = str_replace('.php', '', $class) . '.php';
 
-        if (! str_contains($class, '\\')) {
-            $path = $this->seedPath . str_replace('.php', '', $class) . '.php';
+		// If we have namespaced class, simply try to load it.
+		if (strpos($class, '\\') !== false)
+		{
+			$seeder = new $class($this->config);
+		}
+		// Otherwise, try to load the class manually.
+		else
+		{
+			$path = $this->seedPath . $path;
 
-            if (! is_file($path)) {
-                throw new InvalidArgumentException('The specified seeder is not a valid file: ' . $path);
-            }
+			if (! is_file($path))
+			{
+				throw new \InvalidArgumentException('The specified Seeder is not a valid file: ' . $path);
+			}
 
-            // Assume the class has the correct namespace
-            // @codeCoverageIgnoreStart
-            $class = APP_NAMESPACE . '\Database\Seeds\\' . $class;
+			// Assume the class has the correct namespace
+			$class = APP_NAMESPACE . '\Database\Seeds\\' . $class;
 
-            if (! class_exists($class, false)) {
-                require_once $path;
-            }
-            // @codeCoverageIgnoreEnd
-        }
+			if (! class_exists($class, false))
+			{
+				require_once $path;
+			}
 
-        /** @var Seeder $seeder */
-        $seeder = new $class($this->config);
-        $seeder->setSilent($this->silent)->run();
+			$seeder = new $class($this->config);
+		}
 
-        unset($seeder);
+		$seeder->run();
 
-        if (is_cli() && ! $this->silent) {
-            CLI::write("Seeded: {$class}", 'green');
-        }
-    }
+		unset($seeder);
 
-    /**
-     * Sets the location of the directory that seed files can be located in.
-     *
-     * @return $this
-     */
-    public function setPath(string $path)
-    {
-        $this->seedPath = rtrim($path, '\\/') . '/';
+		if (is_cli() && ! $this->silent)
+		{
+			CLI::write("Seeded: {$class}", 'green');
+		}
+	}
 
-        return $this;
-    }
+	//--------------------------------------------------------------------
 
-    /**
-     * Sets the silent treatment.
-     *
-     * @return $this
-     */
-    public function setSilent(bool $silent)
-    {
-        $this->silent = $silent;
+	/**
+	 * Sets the location of the directory that seed files can be located in.
+	 *
+	 * @param string $path
+	 *
+	 * @return Seeder
+	 */
+	public function setPath(string $path)
+	{
+		$this->seedPath = rtrim($path, '/') . '/';
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Run the database seeds. This is where the magic happens.
-     *
-     * Child classes must implement this method and take care
-     * of inserting their data here.
-     *
-     * @return void
-     *
-     * @codeCoverageIgnore
-     */
-    public function run()
-    {
-    }
+	//--------------------------------------------------------------------
+
+	/**
+	 * Sets the silent treatment.
+	 *
+	 * @param boolean $silent
+	 *
+	 * @return Seeder
+	 */
+	public function setSilent(bool $silent)
+	{
+		$this->silent = $silent;
+
+		return $this;
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	 * Run the database seeds. This is where the magic happens.
+	 *
+	 * Child classes must implement this method and take care
+	 * of inserting their data here.
+	 *
+	 * @return mixed
+	 */
+	public function run()
+	{
+	}
+
+	//--------------------------------------------------------------------
 }
