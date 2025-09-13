@@ -3,9 +3,9 @@
     $pathToRoot = ($depth !== false) ? str_repeat("../", $depth) : "";
     $pageName = "Bem vindo!";
     require_once $pathToRoot."ASSETS/TEMPLATES/header.php";
-
+    
 ?>
-
+    <link rel="stylesheet" href="<?= $pathToRoot?>CSS/index.css">
     <!------------------------------------------- MAIN ------------------------------------------->
     <main>
         <hgroup class="info-pannel">
