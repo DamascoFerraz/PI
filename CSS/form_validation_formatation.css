@@ -1,0 +1,10 @@
+input:invalid ~ footer>button[type='submit']{
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        input:user-invalid{
+            border: solid red 1px;
+        }
+        input:user-valid{
+            border: solid green 1px;
+        }

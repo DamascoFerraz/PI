@@ -8,16 +8,13 @@ CREATE TABLE users (
     pwd TEXT NOT NULL,
     position ENUM('user', 'professor', 'administrador') NOT NULL,
     creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active boolean not null DEFAULT 1,
-
-    FOREIGN KEY (team_id) REFERENCES teams(id)
+    is_active boolean not null DEFAULT 1
 );
 
-INSERT INTO users(username,pwd,position,team_id) VALUES (
+INSERT INTO users(username,pwd,position) VALUES (
     "admin",
-    "$2y$10$e0NRG7k1b8m8r9H6r5HkUuJ8Fz8eFz8eFz8eFz8eFz8eFz8eFz8eFz8e", -- senha: admin123
-    "administrador",
-    1
+    "a96e553dc87e478da122e8027e269d412dac1766", -- senha: admin123
+    "administrador"
 );
 
 CREATE TABLE tags (
@@ -79,7 +76,7 @@ CREATE TABLE comments (
 
     FOREIGN KEY (author_id) REFERENCES users(id),
     FOREIGN KEY (article_id) REFERENCES articles(id)
-)
+);
 
 CREATE TABLE ratings_comment (
     id INT AUTO_INCREMENT PRIMARY KEY,
