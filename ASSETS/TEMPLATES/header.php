@@ -18,10 +18,6 @@
 
         session_start();
 
-        if (isset($_SESSION['user']['id'])){
-            header("Location: PAGES/home.php?r=Boas%20vindas%20de%20volta!");
-            exit();
-        };
     ?>
 </head>
 <body>
@@ -38,7 +34,12 @@
 
             <nav>
                 <button class="outline contrast theme-togle" onclick="darkMode()"><i id="theme-icon" class="fa-regular fa-moon"></i></button>
-                <button class="outline contrast" onclick="window.location.replace('verify.php?f=log')">Sou membro</button>
+
+                <?php if(!isset($_SESSION['user']['id'])): ?>
+                    <button class="outline contrast" onclick="window.location.replace('<?= $pathToRoot?>verify.php?f=log')">Sou membro</button>
+                <?php else: ?>
+                    <button class="outline contrast" onclick="window.location.replace('<?= $pathToRoot?>log_off.php')">Sair <i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                <?php endif; ?>
             </nav>
         </div>
     </header>

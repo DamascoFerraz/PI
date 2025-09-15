@@ -1,237 +1,190 @@
-<!DOCTYPE html>
-<html lang="pt-br" id="htmltag">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="../ASSETS/NEABI_LOGO_WHITE.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.amber.min.css" >
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css" >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../CSS/mainpage.css">
-    <title>HOME • CNEABI</title>
-    <?php
-        session_start();
-        // (r) return message for modal
-        if (!isset($_GET['r'])){
-            $_GET['r'] = '';
-        };
-        echo "<script>var r = '".$_GET['r']."';</script>";
-    ?>
-</head>
-<body >
-    <!------------------------------------------- HEADER ------------------------------------------->
-    <header>
-        <div class="container">
-            <div class="title">
-                <div><img id="logo" width=50rem src="../ASSETS/NEABI_LOGO_DARK.png" alt="NEABI_logo"></div>
-                <hgroup>
-                    <h3>CNEABI</h3>
-                    <p>Central do Nucleo de Estudos Afro-Brasileiros e Indigenas</p>
-                </hgroup>
-            </div>
+<?php
+    // setting path to root (used in archive and page links)
+    $depth = array_search('PI', array_reverse(explode(DIRECTORY_SEPARATOR, __DIR__)));
+    $pathToRoot = ($depth !== false) ? str_repeat("../", $depth) : "";
 
-            <nav>
-                <button class="outline contrast theme-togle" onclick="darkMode()"><i id="theme-icon" class="fa-regular fa-moon"></i></button>
-                <?php
-                    if (isset($_SESSION['user'])) {
-                        echo '<button class="outline contrast" onclick="window.location.replace('."'".'../log_off.php'."'".')">Sair <i class="fa-solid fa-arrow-right-from-bracket"></i></button>';
-                    } else {
-                        echo '<button class="outline contrast" onclick="window.location.replace('."'".'../verify.php?f=log'."'".')">Sou membro</button>';
-                    }
-                ?>
-            </nav>
-        </div>
-    </header>
+    // setting page name (used in header)
+    $pageName = "Home";
 
-    <!------------------------------------------- MAIN ------------------------------------------->
-    <main>
-        <!-- ASIDE -->
-        <aside id="aside">
-            <ul>
-                <a href="home.php"><li><i class="fa-solid fa-house"></i> Home</li></a>
-                <a href="articles.php"><li><i class="fa-solid fa-book"></i> Artigos</li></a>
-                <a href="events.php"><li><i class="fa-solid fa-calendar"></i> Eventos</li></a>
-                <a href="contact.php"><li><i class="fa-solid fa-handshake"></i> Seja NEABI</li></a>
-            </ul>
+    // loading header
+    require_once $pathToRoot."ASSETS/TEMPLATES/header.php";
 
-            <?php
-            if (isset($_SESSION['user']) and ($_SESSION['user']['position'] == "coordenador" or $_SESSION['user']['position'] == "administrador")) {
-                echo '
-                <hr>
-                <ul>
-                    <a href="mod.php"><li><i class="fa-solid fa-handshake"></i> Coordenação</li></a>
-                </ul>
-                ';
-            };
-            if (isset($_SESSION['user']) and $_SESSION['user']['position'] == "administrador") {
-                echo '
-                <hr>
-                <ul>
-                    <a href="adm.php"><li><i class="fa-solid fa-house"></i> ADM hub</li></a>
-                </ul>
-                ';
-            };
-            ?>
-        </aside>
-        <!------------------------------------- CONTENT -------------------------------------------->
+    // loading theme control script
+    echo "<script src=".$pathToRoot."'JS/theme_control.js'></script>";
 
-        <section class="content">
+    // loading aside
+    require_once $pathToRoot."ASSETS/TEMPLATES/aside.php";
+
+    // loading articles
+    require_once $pathToRoot."PHP/db.php";
+    require_once $pathToRoot."PHP/pull_articles.php";
+?>
+
+
             <br>
-            <!-- ARTIGOS CLUBE DO LIVRO -->
             <!-- cards rows -->
             <div class="container-fluid">
                 <!-- header for cards container -->
+
+                <br>
+                <!-- artigos recomendados -->
+                <div class="container-fluid cards-container-header">
+                    <hgroup>
+                        <h4>Recomendado para você</h4>
+                        <p>artigos baseados nas suas tags favoritas</p>
+                        <?php  if (isset($_SESSION['user'])): ?>
+                            <a href="<?= $pathToRoot?>PAGES/ARTICLE/write.php"><i class="fa-solid fa-pencil"></i> Escrever artigo</a>
+                        <?php endif; ?>
+                    </hgroup>
+                    <a href="#">mais</a>
+                </div>
+                <!-- cards -->
+                <div class="container-fluid cards-row">
+                    <?php if(count($articles_by_tags) == 0): ?>
+                        <p>nenhum artigo encontrado</p>
+                    <?php else: ?>
+                        <?php foreach($articles_by_tags as $article): ?>
+                            <article class="card">
+                                <header>
+                                    <h3><?= $article['title'] ?></h3>
+                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
+                                </header>
+                                <main>
+                                    <p>
+                                        <?= substr($article['content'], 0, 200) ?>...
+                                    </p>
+                                </main>
+                                <footer>
+                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
+                                </footer>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <hr>
+
+                <!-- artigos em alta -->
+                <div class="container-fluid cards-container-header">
+                    <hgroup>
+                        <h4>Artigos em alta</h4>
+                        <p>artigos mais lidos recentemente</p>
+                        <?php  if (isset($_SESSION['user'])): ?>
+                            <a href="<?= $pathToRoot?>PAGES/ARTICLE/write.php"><i class="fa-solid fa-pencil"></i> Escrever artigo</a>
+                        <?php endif; ?>
+                    </hgroup>
+                    <a href="#">mais</a>
+                </div>
+                <!-- cards -->
+                <div class="container-fluid cards-row">
+                    <?php if(count($heat_articles) == 0): ?>
+                        <p>nenhum artigo encontrado</p>
+                    <?php else: ?>
+                        <?php foreach($heat_articles as $article): ?>
+                            <article class="card">
+                                <header>
+                                    <h3><?= $article['title'] ?></h3>
+                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
+                                </header>
+                                <main>
+                                    <p>
+                                        <?= substr($article['content'], 0, 200) ?>...
+                                    </p>
+                                </main>
+                                <footer>
+                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
+                                </footer>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <hr>
+
+                <!-- artigos mais bem avaliados -->
+                <div class="container-fluid cards-container-header">
+                    <hgroup>
+                        <h4>Artigos mais bem avaliados</h4>
+                        <p>artigos com melhores avaliações</p>
+                        <?php  if (isset($_SESSION['user'])): ?>
+                            <a href="<?= $pathToRoot?>PAGES/ARTICLE/write.php"><i class="fa-solid fa-pencil"></i> Escrever artigo</a>
+                        <?php endif; ?>
+                    </hgroup>
+                    <a href="#">mais</a>
+                </div>
+                <!-- cards -->
+                <div class="container-fluid cards-row">
+                    <?php if(count($top_rated_articles) == 0): ?>
+                        <p>nenhum artigo encontrado</p>
+                    <?php else: ?>
+                        <?php foreach($top_rated_articles as $article): ?>
+                            <article class="card">
+                                <header>
+                                    <h3><?= $article['title'] ?></h3>
+                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
+                                </header>
+                                <main>
+                                    <p>
+                                        <?= substr($article['content'], 0, 200) ?>...
+                                    </p>
+                                </main>
+                                <footer>
+                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
+                                </footer>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <hr>
+
+                <!-- artigos recentes -->
                 <div class="container-fluid cards-container-header">
                     <hgroup>
                         <h4><i class="fa-solid fa-file"></i> Artigos recentes</h4>
-                        <p>artigos escritos pelos participantes do clube do livro NEABI</p>
-                        <?php   
-                            if (isset($_SESSION['user']) and ($_SESSION['user']['position'] == "escritor" or $_SESSION['user']['position'] == "coordenador" or $_SESSION['user']['position'] == "administrador")) {
-                                echo '<a href="ARTICLE/write.php"><i class="fa-solid fa-pencil"></i> Escrever artigo</a>';
-                            };
-                        ?>
+                        <p>artigos mais recentemente postados</p>
+                        <?php  if (isset($_SESSION['user'])): ?>
+                            <a href="<?= $pathToRoot?>PAGES/ARTICLE/write.php"><i class="fa-solid fa-pencil"></i> Escrever artigo</a>
+                        <?php endif; ?>
                     </hgroup>
                     <a href="articles.php">Mais</a>
                 </div>
                 <!-- cards -->
                 <div class="container-fluid cards-row">
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        <p>descrição</p>
-                        <footer>por: <b>autor</b></footer>
-                    </article>
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        <p>descrição</p>
-                        <footer>por: <b>autor</b></footer>
-                    </article>
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        <p>descrição</p>
-                        <footer>por: <b>autor</b></footer>
-                    </article>
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        <p>descrição</p>
-                        <footer>por: <b>autor</b></footer>
-                    </article>
+                    <?php if (count($recent_articles) == 0): ?>
+                        <p>Nenhum artigo encontrado</p>
+                    <?php else: ?>
+                        <?php foreach($recent_articles as $article): ?>
+                            <article class="card">
+                                <header>
+                                    <h3><?= $article['title'] ?></h3>
+                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
+                                </header>
+                                <main>
+                                    <p>
+                                        <?= substr($article['content'], 0, 200) ?>...
+                                    </p>
+                                </main>
+                                <footer>
+                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
+                                </footer>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
+
             <hr>
-            <!-- EVENTOS -->
-            <!-- cards rows -->
-            <div class="container-fluid">
-                <!-- header for cards container -->
-                <div class="container-fluid cards-container-header">
-                    <hgroup>
-                        <h4><i class="fa-solid fa-calendar"></i> Eventos recentes</h4>
-                        <p>eventos locais relacionados ao NEABI</p>
-                    </hgroup>
-                    <a href="events.php">Mais</a>
-                </div>
-                <!-- cards -->
-                <div class="container-fluid cards-row">
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        descrição
-                        <footer>local/data</footer>
-                    </article>
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        descrição
-                        <footer>local/data</footer>
-                    </article>
-                    <article>
-                        <header><a href="#"><h6>Titulo</h6></a></header>
-                        descrição
-                        <footer>local/data</footer>
-                    </article>
-                </div>
-            </div>
-            <hr>
-            <!-- SEJA NEABI -->
+            
+            <!-- FACA PARTE -->
             <div class="container-fluid faca-parte">
                 <i class="fa-solid fa-handshake"></i>
                 <hgroup>
-                    <h3>Faça parte do NEABI!</h3>
-                    <p>junte-se ao nucleo de estudos</p>
+                    <h3>Faça parte da comunidade de professores do Postit!</h3>
+                    <p>junte-se!</p>
                 </hgroup>
                 <a href="contact.php">Como participar</a>
             </div>
             <br>
         </section>
     </main>
-
-    <!------------------------------------------- FOOTER ------------------------------------------->
-    <footer>
-        <div class="container-fluid">
-            <hgroup>
-                <h6><i class="fa-solid fa-flask"></i> Criado e dirigido por alunos do IFSULDEMINAS-MUZAMBINHO</h6>
-            </hgroup>
-        </div>
-    </footer>
-
-        <!------------------------------------------- MODAL ------------------------------------------->
-        <dialog id='modal' class="container-fluid centered-col">
-        <article>
-            <header>
-                <button aria-label="Close" rel="prev" onclick="modal.style.display='none'"></button>
-                <p>
-                    <strong>Aviso!</strong>
-                </p>
-            </header>
-            <p>
-            <?php
-            echo "".$_GET['r']."";
-            ?>
-            </p>
-        </article>
-    </dialog>
-
-    <!-- JS FOR THEME CHANGE -->
-    <script>
-        const icon = document.getElementById("theme-icon");
-        const logo = document.getElementById("logo");
-        const html = document.getElementById('htmltag');
-
-        (function(){
-            if (localStorage.getItem('theme') == null){
-                localStorage.setItem('theme', 'light');
-            }
-            html.setAttribute('data-theme', localStorage.getItem('theme'));
-            if (localStorage.getItem('theme') === 'dark'){
-                icon.setAttribute('class','fa-regular fa-moon');
-                logo.setAttribute('src','../ASSETS/NEABI_LOGO_WHITE.png');
-            }
-            else {
-                icon.setAttribute('class','fa-regular fa-sun');
-                logo.setAttribute('src','../ASSETS/NEABI_LOGO_DARK.png');
-            }
-        })();
-
-        function darkMode () {
-            var targetTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-
-            if (targetTheme === 'dark'){
-                html.setAttribute('data-theme', targetTheme);
-                localStorage.setItem('theme', targetTheme);
-                icon.setAttribute('class','fa-regular fa-moon');
-                logo.setAttribute('src','../ASSETS/NEABI_LOGO_WHITE.png');
-            }
-            else {
-                html.setAttribute('data-theme', targetTheme);
-                localStorage.setItem('theme', targetTheme);
-                icon.setAttribute('class','fa-regular fa-sun');
-                logo.setAttribute('src','../ASSETS/NEABI_LOGO_DARK.png');
-            }
-            }
-
-           // modal opening when return message is set
-            modal = document.getElementById('modal');
-
-            if (r != ''){
-            modal.style.display='flex'
-            }
-    </script>
-</body>
-</html>

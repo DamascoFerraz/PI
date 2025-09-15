@@ -2,10 +2,9 @@
         <!-- ASIDE -->
         <aside id="aside">
             <ul>
-                <a href="home.php"><li><i class="fa-solid fa-house"></i> Home</li></a>
-                <a href="articles.php"><li><i class="fa-solid fa-book"></i> Artigos</li></a>
-                <a href="events.php"><li><i class="fa-solid fa-calendar"></i> Eventos</li></a>
-                <a href="contact.php"><li><i class="fa-solid fa-handshake"></i> Seja NEABI</li></a>
+                <a href="<?= $pathToRoot ?>PAGES/home.php"><li><i class="fa-solid fa-house"></i> Home</li></a>
+                <a href="<?= $pathToRoot ?>PAGES/articles.php"><li><i class="fa-solid fa-book"></i> Artigos</li></a>
+                <a href="<?= $pathToRoot ?>PAGES/contact.php"><li><i class="fa-solid fa-handshake"></i> Seja NEABI</li></a>
             </ul>
 
             <?php

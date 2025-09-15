@@ -18,6 +18,12 @@
     };
     // transfer (f) to js
     echo "<script>var f = '".$_GET['f']."';</script>";
+
+    // checking if user is logged in
+    if (isset($_SESSION['user']['id'])){
+        header("Location: ".$pathToRoot."PAGES/home.php?r=Boas%20vindas%20de%20volta!");
+        exit();
+    };
 ?>
     <link rel="stylesheet" href="<?= $pathToRoot?>CSS/form_validation_formatation.css">
     <main>

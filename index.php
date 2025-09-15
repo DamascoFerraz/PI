@@ -14,6 +14,12 @@
 
     // loading aside
     // require_once $pathToRoot."ASSETS/TEMPLATES/aside.php";
+
+    // checking if user is logged in
+    if (isset($_SESSION['user']['id'])){
+        header("Location: ".$pathToRoot."PAGES/home.php?r=Boas%20vindas%20de%20volta!");
+        exit();
+    };
 ?>
     <link rel="stylesheet" href="<?= $pathToRoot?>CSS/index.css">
     <!------------------------------------------- MAIN ------------------------------------------->
