@@ -18,6 +18,13 @@
 
         session_start();
 
+        if (!isset($_SESSION['user'])) {
+            $logged = FALSE;
+            echo "<script>var logged = false;</script>";
+        } else {
+            $logged = TRUE;
+            echo "<script>var logged = true;</script>";
+        }
     ?>
 </head>
 <body>

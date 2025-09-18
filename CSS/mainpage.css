@@ -31,6 +31,12 @@
     --color-beige-darker: #f3db94;
     --color-beige-darkerer: #e0c77c;
 
+    --color-blue-brighterer: #51d0ff;
+    --color-blue-brighter: #3ecaff;
+    --color-blue: #1EB8F6;
+    --color-blue-darker: #129ed9;
+    --color-blue-darkerer: #068cc5;
+
     --color-shadow: rgba(0, 0, 0, 0.2);
 
 }
