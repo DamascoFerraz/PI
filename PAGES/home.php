@@ -20,7 +20,6 @@
     require_once $pathToRoot."PHP/pull_articles.php";
 ?>
 
-
             <br>
             <!-- cards rows -->
             <div class="container-fluid">
@@ -40,26 +39,7 @@
                 </div>
                 <!-- cards -->
                 <div class="container-fluid cards-row">
-                    <?php if(count($articles_by_tags) == 0): ?>
-                        <p>nenhum artigo encontrado</p>
-                    <?php else: ?>
-                        <?php foreach($articles_by_tags as $article): ?>
-                            <article class="card">
-                                <header>
-                                    <h3><?= $article['title'] ?></h3>
-                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
-                                </header>
-                                <main>
-                                    <p>
-                                        <?= substr($article['content'], 0, 200) ?>...
-                                    </p>
-                                </main>
-                                <footer>
-                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
-                                </footer>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php listArticles($articles_by_tags); ?>
                 </div>
 
                 <hr>
@@ -77,26 +57,7 @@
                 </div>
                 <!-- cards -->
                 <div class="container-fluid cards-row">
-                    <?php if(count($heat_articles) == 0): ?>
-                        <p>nenhum artigo encontrado</p>
-                    <?php else: ?>
-                        <?php foreach($heat_articles as $article): ?>
-                            <article class="card">
-                                <header>
-                                    <h3><?= $article['title'] ?></h3>
-                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
-                                </header>
-                                <main>
-                                    <p>
-                                        <?= substr($article['content'], 0, 200) ?>...
-                                    </p>
-                                </main>
-                                <footer>
-                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
-                                </footer>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php listArticles($heat_articles); ?>
                 </div>
 
                 <hr>
@@ -114,26 +75,8 @@
                 </div>
                 <!-- cards -->
                 <div class="container-fluid cards-row">
-                    <?php if(count($top_rated_articles) == 0): ?>
-                        <p>nenhum artigo encontrado</p>
-                    <?php else: ?>
-                        <?php foreach($top_rated_articles as $article): ?>
-                            <article class="card">
-                                <header>
-                                    <h3><?= $article['title'] ?></h3>
-                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
-                                </header>
-                                <main>
-                                    <p>
-                                        <?= substr($article['content'], 0, 200) ?>...
-                                    </p>
-                                </main>
-                                <footer>
-                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
-                                </footer>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php listArticles($top_rated_articles); ?>
+                    
                 </div>
 
                 <hr>
@@ -151,26 +94,8 @@
                 </div>
                 <!-- cards -->
                 <div class="container-fluid cards-row">
-                    <?php if (count($recent_articles) == 0): ?>
-                        <p>Nenhum artigo encontrado</p>
-                    <?php else: ?>
-                        <?php foreach($recent_articles as $article): ?>
-                            <article class="card">
-                                <header>
-                                    <h3><?= $article['title'] ?></h3>
-                                    <p>por <?= $article['author'] ?> em <?= date('d/m/Y', strtotime($article['creation'])) ?></p>
-                                </header>
-                                <main>
-                                    <p>
-                                        <?= substr($article['content'], 0, 200) ?>...
-                                    </p>
-                                </main>
-                                <footer>
-                                    <a href="<?= $pathToRoot?>PAGES/ARTICLE/read.php?id=<?= $article['id'] ?>">Ler mais</a>
-                                </footer>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php listArticles($recent_articles); ?>
+                    
                 </div>
             </div>
 
