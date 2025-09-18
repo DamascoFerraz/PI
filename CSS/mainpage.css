@@ -303,6 +303,19 @@ body>footer>.container>hgroup>p>a{
 
 /* #region utility */
 
+.input-button-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.input-button-group>*{
+    width: 100%;
+}
+.input-button-group>button{
+    width: fit-content;
+}
+
 .centered-col{
     display: flex;
     flex-direction: column;

@@ -10,7 +10,7 @@
     require_once $pathToRoot."ASSETS/TEMPLATES/header.php";
 
     // loading theme control script
-    echo "<script src=".$pathToRoot."'JS/theme_control.js'></script>";
+    echo "<script src='".$pathToRoot."JS/theme_control.js'></script>";
 
     // loading aside
     require_once $pathToRoot."ASSETS/TEMPLATES/aside.php";
@@ -188,3 +188,14 @@
             <br>
         </section>
     </main>
+
+<?php
+// loading modal (return messages)
+require_once $pathToRoot."ASSETS/TEMPLATES/modal.php";
+
+// loading modal control script
+echo "<script src='".$pathToRoot."JS/modal_control.js'></script>" ;
+
+// loading footer
+require_once $pathToRoot."ASSETS/TEMPLATES/footer.php";
+?>

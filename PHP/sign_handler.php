@@ -53,6 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$username]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    $pdo = null;
+
     session_start();
 
     $_SESSION['user']['id'] = $row['id'];

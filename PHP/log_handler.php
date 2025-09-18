@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$username]);
 
     if($stmt->rowCount()<1){
+        $pdo = null;
         header('Location: '.$pathToRoot.'verify.php?f=log&r=Usuario%20nao%20Cadastrado');
         die;
     };
@@ -38,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = NULL;
 
     if(sha1($_POST['pwd']."batata")!=$row['pwd']){
+        $pdo = null;
         header('Location: '.$pathToRoot.'verify.php?f=log&r=senha%20incorreta');
         die;
     };
@@ -48,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['user']['id'] = $row['id'];
     $_SESSION['user']['username'] = $row['username'];
     $_SESSION['user']['position'] = $row['position'];
-
+    
+    $pdo = null;
     header('Location: '.$pathToRoot.'PAGES/home.php?r=Logado%20com%20sucesso!');
     die;
 };

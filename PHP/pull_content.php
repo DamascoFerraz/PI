@@ -14,14 +14,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $stmt->execute([$_GET['id']]);
     $GET = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
     if (!$GET) {
-        // artigo nao encontrado
+        // artigo não encontrado
         header("Location: ".$pathToRoot."PAGES/home.php?r=Artigo não encontrado.");
         exit();
     }
-
-    // fechando conexao
-    $pdo = null;
 } else {
     // id invalido
     header("Location: ".$pathToRoot."PAGES/home.php?r=ID inválido.");

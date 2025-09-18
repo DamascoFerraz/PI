@@ -17,6 +17,9 @@
 
     // pulling article
     require_once $pathToRoot."PHP/pull_content.php";
+
+    // pulling style for stars
+    echo "<link rel='stylesheet' href='".$pathToRoot."CSS/star_rating.css'>";
 ?>
             <div class="container-fluid">
                 <hgroup>
@@ -47,21 +50,77 @@
 
                     <h4>Deixe sua avaliação!</h4>
                     <form action="<?= $pathToRoot ?>PHP/rate_article.php" method="POST" class="container-fluid">
-                        <input type="hidden" name="article_id" value="<?= $_GET['id'] ?>">
-                        <div class="container-fluid rating-stars">
-                            <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 estrelas"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 estrelas"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 estrelas"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 estrelas"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 estrela"><i class="fa-solid fa-star"></i></label>
+                        <div class="input-button-group">
+                            <input type="hidden" name="article_id" value="<?= $_GET['id'] ?>">
+                            <div class="container-fluid star-rating">
+                                    <?php for ($i=5; $i >= 1; $i--): ?>
+                                        <input class="radio-input" type="radio" id="star<?=$i;?>" name="star-input" value="<?=$i;?>" />
+                                        <label class="radio-label" class for="star<?=$i;?>" title="<?=$i;?> stars"><?=$i;?> stars</label>
+                                    <?php endfor; ?>
+                            </div>
+                            <button type="submit" class="primary"><i class="fa-solid fa-star"></i></button>
                         </div>
-                        <br>
-                        <button type="submit" class="primary">Enviar avaliação</button>
                     </form>
                 <?php else: ?>
                     <p>Faça <a href="<?= $pathToRoot ?>PAGES/login.php">login</a> para avaliar este artigo!</p>
                 <?php endif; ?>
+                
+                <br>
+                <hr>
+                <!-- renderizando form para comentar -->
+                <?php if (isset($_SESSION['user'])) :?>
+                    <h4>Deixe seu comentário!</h4>
+                    <form action="<?= $pathToRoot ?>PHP/comment_article.php" method="POST" class="container-fluid">
+                        <div class="input-button-group">
+                            <input type="hidden" name="article_id" value="<?= $_GET['id'] ?>">
+                            <input type="text" name="comment" id="comment" placeholder="Escreva seu comentário..." required>
+                            <button type="submit" class="primary"><i class="fa-solid fa-comment"></i></button>
+                        </div>
+                    </form>
+                <?php else: ?>
+                    <p>Faça <a href="<?= $pathToRoot ?>PAGES/login.php">login</a> para comentar este artigo!</p>
+                <?php endif; ?>
 
+                <br>
+                <hr>
+
+                <!-- renderizando comentarios -->
+                <h4>Comentários:</h4>
+                <?php 
+                    require_once $pathToRoot."PHP/pull_coments.php";
+                    if (count($comments) == 0):
+                ?>
+                    <p>não há comentarios ainda, seja o primeiro!</p>
+                <?php else: ?>
+                    <?php foreach($comments as $comment): ?>
+                        <div class="container-fluid comment">
+                            <h5><?= $comment['author'] ?> disse:</h5>
+                            <p><?= $comment['content'] ?></p>
+                            <p><small>em <?= date('d/m/Y', strtotime($comment['creation'])) ?></small></p>
+                            <div class="star-rating">
+                        </div>
+                        <!-- comment rating -->
+                        <?php if(!$_SESSION['user']): ?>
+                            <p><small>faça <a href="<?= $pathToRoot ?>PAGES/login.php">login</a> para avaliar este comentário!</small></p>
+                        <?php else: ?>
+                            <form action="<?= $pathToRoot ?>PHP/rate_comment.php" method="POST" class="container-fluid">
+                                <div class="input-button-group">
+                                    <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
+                                    <div class="container-fluid star-rating">
+                                        <?php for ($i=5; $i >= 1; $i--): ?>
+                                            <input class="radio-input" type="radio" id="star-comment-<?=$comment['id'];?>-<?=$i;?>" name="star-input" value="<?=$i;?>" />
+                                            <label class="radio-label" class for="star-comment-<?=$comment['id'];?>-<?=$i;?>" title="<?=$i;?> stars"><?=$i;?> stars</label>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <button type="submit" class="primary"><i class="fa-solid fa-star"></i></button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+                        </div>
+                        
+                        <hr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
     </main>
