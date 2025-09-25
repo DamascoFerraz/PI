@@ -48,6 +48,32 @@
                                 $Parsedown = new Parsedown();
                                 $html = $Parsedown->text($GET['content']);
                                 echo $html;
+
+                                // add view count if user already viewed the article in this session
+                                require_once $pathToRoot."PHP/db.php";
+
+                                // update viewed articles history to user
+
+                                if ($logged){
+                                    $user_id = $_SESSION['user']['id'];
+                                    $article_id = $GET['id'];
+
+                                    // check if user has already viewed the article
+                                    $stmt = $pdo->prepare("SELECT * FROM views WHERE user_id = ? AND article_id = ?");
+                                    $stmt->execute([$user_id, $article_id]);
+                                    $view = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                    if (!$view) {
+                                        // if not, insert new view
+                                        $stmt = $pdo->prepare("INSERT INTO views (user_id, article_id, view_date) VALUES (?, ?, NOW())");
+                                        $stmt->execute([$user_id, $article_id]);
+                                        
+                                    } else {
+                                        // if yes, update view date
+                                        $stmt = $pdo->prepare("UPDATE views SET view_date = NOW() WHERE user_id = ? AND article_id = ?");
+                                        $stmt->execute([$user_id, $article_id]);
+                                    }
+                                }
                             ?>
                         </hgroup>
                     </div>

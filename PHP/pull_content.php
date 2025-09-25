@@ -8,7 +8,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         SELECT articles.id, articles.title, articles.content, articles.creation, users.username AS author, articles.descr,
         AVG(ratings_article.rating) AS avg_rating
         FROM articles
-        JOIN ratings_article ON articles.id = ratings_article.article_id
+        LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
         JOIN users ON articles.author_id = users.id
         WHERE articles.id = ?
         GROUP BY articles.id, articles.title, articles.content, articles.creation, users.username 

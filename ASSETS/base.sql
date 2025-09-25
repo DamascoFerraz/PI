@@ -166,6 +166,19 @@ INSERT INTO views(article_id,user_id) VALUES
 ('9','5'),
 ('10','1');
 
+DELIMITER $$
+
+CREATE TRIGGER trg_add_view
+AFTER INSERT ON views
+FOR EACH ROW
+BEGIN
+    UPDATE articles
+    SET views = views + 1
+    WHERE id = NEW.article_id;
+END$$
+
+DELIMITER ;
+
 CREATE TABLE article_tags (
     article_id INT NOT NULL,
     tag_id INT NOT NULL,
@@ -427,3 +440,13 @@ INSERT INTO ratings_comment(comment_id,user_id,rating) VALUES
 ('10','3','5'),
 ('10','3','4'),
 ('10','3','5');
+
+-- USAR DEPOIS EM CONSULTA SEPARADA
+use postit;
+UPDATE articles a
+JOIN (
+    SELECT article_id, COUNT(*) AS total_views
+    FROM views
+    GROUP BY article_id
+) v ON a.id = v.article_id
+SET a.views = v.total_views;

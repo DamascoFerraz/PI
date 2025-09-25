@@ -81,6 +81,25 @@ imagem exemplo:
                         <button class="secondary" type="submit" formaction="preview.php">ver preview</button>
                     </footer>
                     <hr>
+                    <!-- select tags from db, and option to add a new tag-->
+                    <label for="tags">Tags:</label>
+                    <select name="tags[]" id="tags" multiple required>
+                        <?php
+                            require_once $pathToRoot."PHP/db.php";
+                            $stmt = $pdo->prepare("SELECT * FROM tags");
+                            $stmt->execute();
+                            $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            
+                            foreach ($tags as $tag): ?>
+                                <option value="<?= $tag['id'] ?>"><?= $tag['name'] ?></option>
+                            <?php endforeach;
+                            
+                            // closing connection
+                            $pdo = null;
+                        ?>
+                    </select>
+                    <hr>
+
                     <footer>
                         <button type="submit">Postar</button>
                     </footer>

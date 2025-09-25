@@ -4,7 +4,7 @@ require_once $pathToRoot."PHP/db.php";
 
 // adiquirindo os 4 artigos mais bem avaliados sem duplicatas
 $top_rated_articles = $pdo->query("
-    SELECT DISTINCT articles.id, articles.title, articles.content, articles.creation, users.username AS author, 
+    SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr, 
     AVG(ratings_article.rating) AS avg_rating
     FROM articles
     JOIN ratings_article ON articles.id = ratings_article.article_id
@@ -16,11 +16,11 @@ $top_rated_articles = $pdo->query("
 
 // // adiquirindo os 4 artigos mais lidos recentemente (em alta)
 $heat_articles = $pdo->query("
-    SELECT articles.id, articles.title, articles.content, articles.creation, users.username AS author, 
+    SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
     COUNT(views.id) AS view_count,
     AVG(ratings_article.rating) AS avg_rating
     FROM articles
-    JOIN ratings_article ON articles.id = ratings_article.article_id
+    LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN views ON articles.id = views.article_id
     JOIN users ON articles.author_id = users.id
     WHERE views.view_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
@@ -33,12 +33,12 @@ $heat_articles = $pdo->query("
 
 // adiquirindo os 4 artigos mais recentes
 $recent_articles = $pdo->query("
-    SELECT articles.id, articles.title, articles.content, articles.creation, users.username AS author, 
+    SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
     AVG(ratings_article.rating) AS avg_rating
     FROM articles
-    JOIN ratings_article ON articles.id = ratings_article.article_id
+    LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
-    GROUP BY articles.id, articles.title, articles.content, articles.creation, users.username
+    GROUP BY articles.id, articles.title, articles.creation, users.username
     ORDER BY articles.creation DESC
     LIMIT 3
 ")->fetchAll(PDO::FETCH_ASSOC);
@@ -65,14 +65,14 @@ if (isset($_SESSION['user'])) {
         $articles_by_tags = [];
         
         $stmt = $pdo->prepare("
-            SELECT DISTINCT articles.id, articles.title, articles.content, articles.creation, users.username AS author, 
+            SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
             AVG(ratings_article.rating) AS avg_rating
             FROM articles
-            JOIN ratings_article ON articles.id = ratings_article.article_id
+            LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
             JOIN article_tags ON articles.id = article_tags.article_id
             JOIN users ON articles.author_id = users.id
             WHERE article_tags.tag_id = ?
-            GROUP BY articles.id, articles.title, articles.content, articles.creation, users.username
+            GROUP BY articles.id, articles.title, articles.creation, users.username
             LIMIT 3"
         );
         
@@ -126,7 +126,7 @@ $pdo = null;
             </header>
             <main>
                 <p>
-                    <?= substr($article['content'], 0, 200) ?>...
+                    <?= substr($article['descr'], 0, 100) ?>...
                 </p>
             </main>
             <footer>
