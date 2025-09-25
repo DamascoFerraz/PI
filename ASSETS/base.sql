@@ -294,6 +294,7 @@ CREATE TABLE comments (
     content TEXT NOT NULL,
     author_id INT NOT NULL,
     article_id INT NOT NULL,
+    rating INT DEFAULT 0,
     creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active boolean not null DEFAULT 1,
 
@@ -441,7 +442,26 @@ INSERT INTO ratings_comment(comment_id,user_id,rating) VALUES
 ('10','3','4'),
 ('10','3','5');
 
--- USAR DEPOIS EM CONSULTA SEPARADA
+DELIMITER $$
+CREATE TRIGGER trg_update_article_rating
+AFTER INSERT ON ratings_article
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating FLOAT;
+
+    SELECT AVG(rating) INTO avg_rating
+    FROM ratings_article
+    WHERE article_id = NEW.article_id;
+
+    UPDATE articles
+    SET views = ROUND(avg_rating)
+    WHERE id = NEW.article_id;
+END$$
+
+DELIMITER ;
+-- Atualiza a contagem de views em articles e a contagem de ratings em comments
+SET SQL_SAFE_UPDATES = 0;
+
 use postit;
 UPDATE articles a
 JOIN (
@@ -450,3 +470,13 @@ JOIN (
     GROUP BY article_id
 ) v ON a.id = v.article_id
 SET a.views = v.total_views;
+
+UPDATE comments c
+JOIN (
+    SELECT comment_id, COUNT(*) AS total_ratings
+    FROM ratings_comment
+    GROUP BY comment_id
+) rc ON c.id = rc.comment_id
+SET c.rating = rc.total_ratings;
+
+SET SQL_SAFE_UPDATES = 1;

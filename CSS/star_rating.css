@@ -1,5 +1,6 @@
 .star-rating {
-  display: flex;
+  height: min-content;
+  display: inline-flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
 }

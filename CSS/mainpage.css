@@ -315,11 +315,14 @@ body>footer>.container>hgroup>p>a{
     align-items: center;
     justify-content: center;
 }
-.input-button-group>*{
+.input-button-group>input{
     width: 100%;
+    margin: 0;
 }
 .input-button-group>button{
+    height: fit-content;
     width: fit-content;
+    margin: 0;
 }
 
 .centered-col{
