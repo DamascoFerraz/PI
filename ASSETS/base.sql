@@ -105,6 +105,7 @@ CREATE TABLE articles (
     author_id INT NOT NULL,
     creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     views INT DEFAULT 0,
+    rating INT DEFAULT 0,
 
     is_active boolean not null DEFAULT 1,
 
@@ -289,6 +290,7 @@ INSERT INTO ratings_article(article_id,user_id,rating) VALUES
 ('10','2','4'),
 ('10','2','5');
 
+
 CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
@@ -454,10 +456,27 @@ BEGIN
     WHERE article_id = NEW.article_id;
 
     UPDATE articles
-    SET views = ROUND(avg_rating)
+    SET rating = ROUND(avg_rating)
     WHERE id = NEW.article_id;
 END$$
 
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_update_comment_rating
+AFTER INSERT ON ratings_comment
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating FLOAT;
+
+    SELECT AVG(rating) INTO avg_rating
+    FROM ratings_comment
+    WHERE comment_id = NEW.comment_id;
+
+    UPDATE comments
+    SET rating = ROUND(avg_rating)
+    WHERE id = NEW.comment_id;
+END$$
 DELIMITER ;
 -- Atualiza a contagem de views em articles e a contagem de ratings em comments
 SET SQL_SAFE_UPDATES = 0;
@@ -471,12 +490,21 @@ JOIN (
 ) v ON a.id = v.article_id
 SET a.views = v.total_views;
 
+UPDATE articles a
+JOIN (
+    SELECT article_id, ROUND(AVG(rating)) AS avg_rating
+    FROM ratings_article
+    GROUP BY article_id
+) ra ON a.id = ra.article_id
+SET a.rating = ra.avg_rating;
+
 UPDATE comments c
 JOIN (
-    SELECT comment_id, COUNT(*) AS total_ratings
+    SELECT comment_id, ROUND(AVG(rating)) AS avg_rating
     FROM ratings_comment
     GROUP BY comment_id
 ) rc ON c.id = rc.comment_id
-SET c.rating = rc.total_ratings;
+SET c.rating = rc.avg_rating;
+
 
 SET SQL_SAFE_UPDATES = 1;

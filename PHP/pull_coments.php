@@ -6,11 +6,11 @@ if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
 
     $stmt = $pdo->query("
-        SELECT comments.id, comments.content, comments.creation, comments.rating, users.username AS author 
+        SELECT comments.id, comments.content, comments.creation, comments.rating, comments.article_id, users.username AS author 
         FROM comments
         LEFT JOIN users ON comments.author_id = users.id
         WHERE comments.article_id = $article_id
-        ORDER BY comments.creation DESC
+        ORDER BY  comments.rating DESC, comments.creation DESC
     ");
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -19,13 +19,11 @@ if (isset($_GET['id'])) {
 }
 $pdo = null;
 
-function listComments($commentsArray, $logged = false) {
+function listComments($commentsArray, $logged = false, $pathToRoot = "") {
     if (count($commentsArray)== 0){
         echo "<p>não ha comentarios</p>";
     }
     else{
-        $depth = array_search('PI', array_reverse(explode(DIRECTORY_SEPARATOR, __DIR__)));
-        $pathToRoot = ($depth !== false) ? str_repeat("../", $depth) : "";
         
         foreach($commentsArray as $comment):?>
             <div class="container-fluid comment">
@@ -33,12 +31,11 @@ function listComments($commentsArray, $logged = false) {
                 <p><?= $comment['content'] ?></p>
                 <div class="star-rating">
             
-                <?php if(!$logged): ?>
-                    <p><small>faça <a href="<?= $pathToRoot ?>../verify.php">login</a> para avaliar este comentário!</small></p>
-                <?php else: ?>
+                <?php if($logged): ?>
                     <form action="<?= $pathToRoot ?>PHP/rate_comment.php" method="POST" class="container-fluid">
                         <div class="input-button-group">
                             <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
+                            <input type="hidden" name="article_id" value="<?= $comment['article_id'] ?>">
                             <div class="container-fluid star-rating">
                                 <?php for ($i=5; $i >= 1; $i--): ?>
                                     <input class="radio-input" type="radio" id="star-comment-<?=$comment['id'];?>-<?=$i;?>" name="star-input" value="<?=$i;?>" />

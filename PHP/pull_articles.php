@@ -5,7 +5,7 @@ require_once $pathToRoot."PHP/db.php";
 // adiquirindo os 4 artigos mais bem avaliados sem duplicatas
 $top_rated_articles = $pdo->query("
     SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr, 
-    AVG(ratings_article.rating) AS avg_rating
+    articles.rating AS avg_rating
     FROM articles
     JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
@@ -17,8 +17,8 @@ $top_rated_articles = $pdo->query("
 // // adiquirindo os 4 artigos mais lidos recentemente (em alta)
 $heat_articles = $pdo->query("
     SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-    COUNT(views.id) AS view_count,
-    AVG(ratings_article.rating) AS avg_rating
+    articles.views AS view_count,
+    articles.rating AS avg_rating
     FROM articles
     LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN views ON articles.id = views.article_id
@@ -34,7 +34,7 @@ $heat_articles = $pdo->query("
 // adiquirindo os 4 artigos mais recentes
 $recent_articles = $pdo->query("
     SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-    AVG(ratings_article.rating) AS avg_rating
+    articles.rating AS avg_rating
     FROM articles
     LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
@@ -66,7 +66,7 @@ if (isset($_SESSION['user'])) {
         
         $stmt = $pdo->prepare("
             SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-            AVG(ratings_article.rating) AS avg_rating
+            articles.rating AS avg_rating
             FROM articles
             LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
             JOIN article_tags ON articles.id = article_tags.article_id
@@ -115,7 +115,7 @@ $pdo = null;
                 <?php for($i=0; $i < floor($article['avg_rating']); $i++): ?>
                     <i class="fa-solid fa-star" style="color: #FFD700;"></i>
                 <?php endfor; ?>
-                <?php if ($article['avg_rating'] - floor($article['avg_rating']) >= 0): ?>
+                <?php if ($article['avg_rating'] - floor($article['avg_rating']) >= 0.1): ?>
                     <i class="fa-solid fa-star-half-stroke" style="color: #FFD700;"></i>
                 <?php endif; ?>
                 <?php for($i = 5 - ceil($article['avg_rating']); $i > 0; $i--): ?>

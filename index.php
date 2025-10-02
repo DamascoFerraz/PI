@@ -32,7 +32,7 @@
                 <button class="primary" onclick="window.location = 'PAGES/home.php'">Vamos lá!</button>
             </div>
         </hgroup>
-        <img id="logo-mp" width=300rem src="<?= $pathToRoot?>ASSETS/logo.png" alt="NEABI_logo">
+        <img id="logo-mp" width=300rem src="<?= $pathToRoot?>ASSETS/logo.png" alt="POSTIT_logo">
     </main>
 
 <?php

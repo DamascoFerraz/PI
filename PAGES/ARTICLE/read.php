@@ -28,7 +28,7 @@
                     <?php for($i=0; $i < floor($GET['avg_rating']); $i++): ?>
                     <i class="fa-solid fa-star" style="color: #FFD700;"></i>
                     <?php endfor; ?>
-                    <?php if ($GET['avg_rating'] - floor($GET['avg_rating']) >= 0): ?>
+                    <?php if ($GET['avg_rating'] - floor($GET['avg_rating']) >= 0.1): ?>
                         <i class="fa-solid fa-star-half-stroke" style="color: #FFD700;"></i>
                     <?php endif; ?>
                     <?php for($i = 5 - ceil($GET['avg_rating']); $i > 0; $i--): ?>
@@ -99,14 +99,15 @@
                         </div>
                     </form>
                 <?php else: ?>
-                    <p>Faça <a href="<?= $pathToRoot ?>verify.php">login</a> para avaliar este artigo!</p>
+                    <p>Faça <a href="<?= $pathToRoot ?>verify.php">login</a> para <u>avaliar e comentar</u> este artigo e seus comentarios!</p>
                 <?php endif; ?>
-                
                 <br>
                 <hr>
-                <!-- renderizando form para comentar -->
+
+                <!-- renderizando comentarios -->
+                <h4>Comentários:</h4>
+
                 <?php if ($logged) :?>
-                    <h4>Deixe seu comentário!</h4>
                     <form action="<?= $pathToRoot ?>PHP/comment_article.php" method="POST" class="container-fluid">
                         <div class="input-button-group">
                             <input type="hidden" name="article_id" value="<?= $_GET['id'] ?>">
@@ -114,18 +115,13 @@
                             <button type="submit" class="primary"><i class="fa-solid fa-comment"></i></button>
                         </div>
                     </form>
-                <?php else: ?>
-                    <p>Faça <a href="<?= $pathToRoot ?>verify.php">login</a> para comentar este artigo!</p>
                 <?php endif; ?>
 
                 <br>
-                <hr>
 
-                <!-- renderizando comentarios -->
-                <h4>Comentários:</h4>
                 <?php 
                     require_once $pathToRoot."PHP/pull_coments.php";
-                    listComments($comments, $logged);
+                    listComments($comments, $logged, $pathToRoot);
                 ?>
             </div>
         </section>
