@@ -11,7 +11,7 @@
             if (isset($_SESSION['user']) and $_SESSION['user']['position'] == "administrador"):?>
                 <hr>
                 <ul>
-                    <a href="<?= $pathToRoot ?>PAGES/adm.php"><li><i class="fa-solid fa-house"></i> ADM hub</li></a>
+                    <a href="<?= $pathToRoot ?>PAGES/ADM/adm.php"><li><i class="fa-solid fa-house"></i> ADM hub</li></a>
                 </ul>
             <?php endif; ?>
         </aside>
