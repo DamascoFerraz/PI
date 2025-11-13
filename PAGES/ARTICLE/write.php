@@ -4,7 +4,7 @@
     $pathToRoot = ($depth !== false) ? str_repeat("../", $depth) : "";
 
     // setting page name (used in header)
-    $pageName = "Exemplo de pagina";
+    $pageName = "Escrevendo um artigo";
 
     // loading header
     require_once $pathToRoot."ASSETS/TEMPLATES/header.php";

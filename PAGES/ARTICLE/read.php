@@ -3,8 +3,11 @@
     $depth = array_search('PI', array_reverse(explode(DIRECTORY_SEPARATOR, __DIR__)));
     $pathToRoot = ($depth !== false) ? str_repeat("../", $depth) : "";
 
+    // pulling article
+    require_once $pathToRoot."PHP/pull_content.php";
+
     // setting page name (used in header)
-    $pageName = "Exemplo de pagina";
+    $pageName = $GET['title'];
 
     // loading header
     require_once $pathToRoot."ASSETS/TEMPLATES/header.php";
@@ -14,9 +17,6 @@
 
     // loading aside
     require_once $pathToRoot."ASSETS/TEMPLATES/aside.php";
-
-    // pulling article
-    require_once $pathToRoot."PHP/pull_content.php";
 
     // pulling style for stars
     echo "<link rel='stylesheet' href='".$pathToRoot."CSS/star_rating.css'>";
