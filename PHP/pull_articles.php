@@ -3,55 +3,79 @@
 require_once $pathToRoot."PHP/db.php";
 
 // adiquirindo os 4 artigos mais bem avaliados sem duplicatas
-$top_rated_articles = $pdo->query("
-    SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr, 
-    articles.rating AS avg_rating
+$top_rated_articles = $pdo->query(
+    "SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr, 
+    AVG(ratings_article.rating) AS avg_rating
+
     FROM articles
+
     JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
+
     GROUP BY articles.id
+
     ORDER BY avg_rating DESC
-    LIMIT 3"
-)->fetchAll(PDO::FETCH_ASSOC);
+
+    LIMIT 3
+
+")->fetchAll(PDO::FETCH_ASSOC);
 
 // // adiquirindo os 4 artigos mais lidos recentemente (em alta)
-$heat_articles = $pdo->query("
-    SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
+$heat_articles = $pdo->query(
+    "SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
     articles.views AS view_count,
-    articles.rating AS avg_rating
+    AVG(ratings_article.rating) AS avg_rating
+
     FROM articles
+
     LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN views ON articles.id = views.article_id
     JOIN users ON articles.author_id = users.id
+
     WHERE views.view_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+
     GROUP BY articles.id
+
     ORDER BY view_count DESC
+
     LIMIT 3
+
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 
 
 // adiquirindo os 4 artigos mais recentes
-$recent_articles = $pdo->query("
-    SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-    articles.rating AS avg_rating
+$recent_articles = $pdo->query(
+    "SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
+    AVG(ratings_article.rating) AS avg_rating
+
     FROM articles
+
     LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
+
     GROUP BY articles.id, articles.title, articles.creation, users.username
+
     ORDER BY articles.creation DESC
+
     LIMIT 3
+
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 // adiquirindo os 4 artigos semelhantes as tags fav do user
 $favorite_tags = [];
 if (isset($_SESSION['user'])) {
-    $stmt = $pdo->prepare("
-        SELECT tags.id, tags.name
+    $stmt = $pdo->prepare(
+        "SELECT tags.id, tags.name
+
         FROM user_tag_ratings
+
         JOIN tags ON user_tag_ratings.tag_id = tags.id
+
         WHERE user_tag_ratings.user_id = ?
+
         ORDER BY user_tag_ratings.rating DESC
+
         LIMIT 3
     ");
 
@@ -64,17 +88,20 @@ if (isset($_SESSION['user'])) {
 
         $articles_by_tags = [];
         
-        $stmt = $pdo->prepare("
-            SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-            articles.rating AS avg_rating
+        $stmt = $pdo->prepare(
+            "SELECT DISTINCT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
+            AVG(ratings_article.rating) AS avg_rating
+
             FROM articles
-            LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
+
             JOIN article_tags ON articles.id = article_tags.article_id
             JOIN users ON articles.author_id = users.id
+            LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
+
             WHERE article_tags.tag_id = ?
+
             GROUP BY articles.id, articles.title, articles.creation, users.username
-            LIMIT 3"
-        );
+        ");
         
         foreach ($favorite_tags as $tag) {
             $stmt->execute([$tag['id']]);

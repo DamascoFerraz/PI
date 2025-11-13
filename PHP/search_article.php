@@ -6,15 +6,21 @@ require_once $pathToRoot."PHP/db.php";
 
 $search_query = $_GET['search'];
 
-$search_articles = $pdo->prepare("
-    SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
-    articles.rating AS avg_rating
+$search_articles = $pdo->prepare(
+    "SELECT articles.id, articles.title, articles.creation, users.username AS author, articles.descr,
+    AVG(ratings_article.rating) AS avg_rating
+
     FROM articles
+
     LEFT JOIN ratings_article ON articles.id = ratings_article.article_id
     JOIN users ON articles.author_id = users.id
+
     WHERE articles.title LIKE ? OR articles.content LIKE ? OR articles.descr LIKE ?
+
     GROUP BY articles.id
+
     ORDER BY articles.creation DESC
+
     LIMIT 10
 ");
 

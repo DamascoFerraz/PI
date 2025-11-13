@@ -5,12 +5,17 @@
 if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
 
-    $stmt = $pdo->query("
-        SELECT comments.id, comments.content, comments.creation, comments.rating, comments.article_id, users.username AS author 
+    $stmt = $pdo->query(
+        "SELECT comments.id, comments.content, comments.creation, comments.rating, comments.article_id, users.username AS author 
+
         FROM comments
+
         LEFT JOIN users ON comments.author_id = users.id
+
         WHERE comments.article_id = $article_id
+
         ORDER BY  comments.rating DESC, comments.creation DESC
+        
     ");
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
