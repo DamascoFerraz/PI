@@ -74,4 +74,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET)) {
     ")->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function printUsersTable($usersVar) {
+    if (empty($users)) {
 
+        echo "<tr><td>Nenhum usuário encontrado.</td></tr>";
+    } else {
+        ?>
+        <?php
+        foreach ($users as $user) {
+            ?>
+                <tr style='cursor:pointer;' onclick='window.location.replace("<?= $pathToRoot ?>PAGES/ADM/edit_user.php?id=<?=htmlspecialchars($user["id"]) ?>")'>
+                    <td><?=htmlspecialchars($user['id'])?></td>
+                    <td><?=htmlspecialchars($user['username'])?></td>
+                    <td><?=htmlspecialchars($user['position'])?></td>
+                    <td><?=htmlspecialchars($user['creation'])?></td>
+                    <td><?=htmlspecialchars($user['is_active'])?></td>
+                </tr>
+            <?php
+        }
+    }
+}

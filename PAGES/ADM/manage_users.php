@@ -70,24 +70,22 @@
                 if (empty($users)) {
 
                     echo "<tr><td>Nenhum usuário encontrado.</td></tr>";
-                    echo "</table>";
                 } else {
-                    ?>
-                    <?php
                     foreach ($users as $user) {
-                        ?><tr>
-                            <!-- TODO: fix link -->
-                            <a href="<?= $pathToRoot ?>PAGES/ADM/edit_user.php?id=<?=htmlspecialchars($user['id']) ?>">
+                        ?>
+                            <tr style='cursor:pointer;' onclick='window.location.replace("<?= $pathToRoot ?>PAGES/ADM/edit_user.php?id=<?=htmlspecialchars($user["id"]) ?>")'>
+                                <!-- TODO: fix link -->
                                 <td><?=htmlspecialchars($user['id'])?></td>
                                 <td><?=htmlspecialchars($user['username'])?></td>
                                 <td><?=htmlspecialchars($user['position'])?></td>
                                 <td><?=htmlspecialchars($user['creation'])?></td>
                                 <td><?=htmlspecialchars($user['is_active'])?></td>
-                            </a>
-                        </tr><?php
+                            </tr>
+                        <?php
                     }
-                    echo "</table>";
                 }
+
+                echo "</table>";
                 
             ?>
         </div>

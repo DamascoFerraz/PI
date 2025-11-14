@@ -101,6 +101,8 @@ if (isset($_SESSION['user'])) {
             WHERE article_tags.tag_id = ?
 
             GROUP BY articles.id, articles.title, articles.creation, users.username
+
+            LIMIT 3
         ");
         
         foreach ($favorite_tags as $tag) {
