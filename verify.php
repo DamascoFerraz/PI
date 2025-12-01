@@ -56,7 +56,7 @@
                         <input type="text" name="username" id="inpt-name" required>
 
                         <label for="inpt-pwd">Senha:  <span>minimo 8 letras</span></label>
-                        <input type="password" name="pwd" id="inpt-pwd-mem" required required pattern=".{8,}">
+                        
 
                         <br>
                         <footer class="centered-col">
