@@ -34,7 +34,7 @@
             </div>
             <hr>
             <div class="container-fluid">
-                <form action="../../PHP/process_article.php"  method="POST">
+                <form action="../../PHP/process_article.php" target="_blank"  method="POST">
                     <label for="title">Titulo:</label>
                     <input type="text" name="title" required placeholder="Titulo do seu artigo" value="Meu primeiro artigo">
 
@@ -78,7 +78,7 @@ imagem exemplo:
                     <input type="hidden" name="author_position" value="<?php echo $_SESSION['user']['position']; ?>">
                     <hr>
                     <footer>
-                        <button class="secondary" type="submit" formaction="preview.php">ver preview</button>
+                        <button class="secondary" type="submit" formaction="preview.php" >ver preview</button>
                     </footer>
                     <hr>
                     <!-- select tags from db, and option to add a new tag-->
@@ -101,7 +101,7 @@ imagem exemplo:
                     <hr>
 
                     <footer>
-                        <button type="submit">Postar</button>
+                        <button type="submit" formtarget="_self">Postar</button>
                     </footer>
                 </form>
             </div>

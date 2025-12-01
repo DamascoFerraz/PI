@@ -24,7 +24,7 @@
     <section class="content container-fluid">
         <hgroup>
             <h1>Area de Administração</h1>
-            <p>Bem-vindo à área de administração. Aqui você pode gerenciar usuários</p>
+            <p>Bem-vindo à área de administração. Aqui você pode gerenciar comentarios</p>
             <hr>
             <p>Você está loggado como:</p>
             <h3><?=htmlspecialchars($_SESSION['user']['username'])?> (<?=htmlspecialchars($_SESSION['user']['position'])?> | ID: <?= $_SESSION['user']['id'] ?>)</h3>
@@ -33,53 +33,42 @@
 
         
         <div class="container-fluid cards-row">
-            <h2>listagem de usuarios</h2>
+            <h2>listagem de comentarios</h2>
             <table>
             <tr>
                 <form action="" method="get">
                         <th><input type="number" name="id" id="id" placeholder='ID'></th>
+                        <th><input type="text" name="title" id="title" placeholder='title'></th>
+                        <th><input type="text" name="descr" id="descr" placeholder='descr'></th>
+                        <th><input type="text" name="content" id="content" placeholder='content'></th>
+                        <th><input type="number" name="author_id" id="author_id" placeholder='author ID'></th>
 
-                        <th><input type="text" name="username" id="username" placeholder='username'></th>
-
-                        <th><select name='position' id='position'>
-                                <option value="" disabled selected>position</option>
-                                <option value="administrador">administrador</option>
-                                <option value="editor">editor</option>
-                                <option value="usuario">usuario</option>
-                        </select></th>
-
-                        <th><select name='order' name='order'>
-                                <option value="" disabled selected>creation</option>
-                                <option value="crescent">crescent</option>
-                                <option value="decrescent">decrescent</option>
-                        </select></th>
 
                         <th><select name='is_active' id='is_active'>
                                 <option value="" disabled selected>is active</option>
                                 <option value="1">active</option>
                                 <option value="0">inactive</option>
                         </select></th>
-                    
                         <button style="" type="submit" class="primary"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </tr>
 
             <?php
-                require_once $pathToRoot."PHP/adm_pull_users.php";
+                require_once $pathToRoot."PHP/adm_pull_articles.php";
 
-                if (empty($users)) {
+                if (empty($articles)) {
 
-                    echo "<tr><td>Nenhum usuário encontrado.</td></tr>";
+                    echo "<tr><td>Nenhum comentario encontrado.</td></tr>";
                 } else {
-                    foreach ($users as $user) {
+                    foreach ($articles as $article) {
                         ?>
-                            <tr style='cursor:pointer;' onclick='window.location.replace("<?= $pathToRoot ?>PAGES/ADM/edit_user.php?id=<?=htmlspecialchars($user["id"]) ?>")'>
-                                <!-- TODO: fix link -->
-                                <td><?=htmlspecialchars($user['id'])?></td>
-                                <td><?=htmlspecialchars($user['username'])?></td>
-                                <td><?=htmlspecialchars($user['position'])?></td>
-                                <td><?=htmlspecialchars($user['creation'])?></td>
-                                <td><?=htmlspecialchars($user['is_active'])?></td>
+                            <tr style='cursor:pointer;' onclick='window.location.replace("<?= $pathToRoot ?>PAGES/ADM/ARTICLES/edit.php?id=<?=htmlspecialchars($article["id"]) ?>")'>
+                                <td><?=htmlspecialchars($article['id'])?></td>
+                                <td><?=htmlspecialchars($article['title'])?></td>
+                                <td><?=htmlspecialchars($article['descr'])?></td>
+                                <td><?=htmlspecialchars(substr($article['content'], 0, 50))?><?= strlen($article['content']) > 50 ? '...' : '' ?></td>
+                                <td><?=htmlspecialchars($article['author_id'])?></td>
+                                <td><?=htmlspecialchars($article['is_active'])?></td>
                             </tr>
                         <?php
                     }

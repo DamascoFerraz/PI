@@ -40,7 +40,8 @@ INSERT INTO users(username,pwd,position) VALUES
 
 CREATE TABLE tags (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    is_active boolean not null DEFAULT 1
 );
 
 INSERT INTO tags(name) VALUES 

@@ -40,25 +40,25 @@
             }
         </style>
         <div class="container-fluid cards-row">
-            <a href="<?= $pathToRoot ?>PAGES/ADM/manage_users.php">
+            <a href="<?= $pathToRoot ?>PAGES/ADM/USERS">
                 <article>
                     <h2>Gerenciar Usuários</h2>
                     <p>Adicione, remova ou modifique usuários do sistema.</p>
                 </article>
             </a>
-            <a href="<?= $pathToRoot ?>PAGES/ADM/manage_articles.php">
+            <a href="<?= $pathToRoot ?>PAGES/ADM/ARTICLES">
                 <article>
                     <h2>Gerenciar artigos</h2>
                     <p>Adicione, remova ou modifique artigos do sistema.</p>
                 </article>
             </a>
-            <a href="<?= $pathToRoot ?>PAGES/ADM/manage_tags.php">
+            <a href="<?= $pathToRoot ?>PAGES/ADM/TAGS">
                 <article>
                     <h2>Gerenciar tags</h2>
                     <p>Adicione, remova ou modifique tags do sistema.</p>
                 </article>
             </a>
-            <a href="<?= $pathToRoot ?>PAGES/ADM/manage_comments.php">
+            <a href="<?= $pathToRoot ?>PAGES/ADM/COMMENTS">
                 <article>
                     <h2>Gerenciar comentarios</h2>
                     <p>Adicione, remova ou modifique comentarios do sistema.</p>
