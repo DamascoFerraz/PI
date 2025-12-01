@@ -39,8 +39,8 @@
                 <form action="" method="get">
                         <th><input type="number" name="id" id="id" placeholder='ID'></th>
                         <th><input type="text" name="content" id="content" placeholder='content'></th>
-                        <th><input type="number" name="user_id" id="user_id" placeholder='user ID'></th>
-                        <th><input type="number" name="post_id" id="post_id" placeholder='post ID'></th>
+                        <th><input type="number" name="author_id" id="user_id" placeholder='author ID'></th>
+                        <th><input type="number" name="article_id" id="article_id" placeholder='article ID'></th>
                         <th><select name='is_active' id='is_active'>
                                 <option value="" disabled selected>is active</option>
                                 <option value="1">active</option>

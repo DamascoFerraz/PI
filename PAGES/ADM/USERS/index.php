@@ -44,7 +44,7 @@
                         <th><select name='position' id='position'>
                                 <option value="" disabled selected>position</option>
                                 <option value="administrador">administrador</option>
-                                <option value="editor">editor</option>
+                                <option value="professor">professor</option>
                                 <option value="usuario">usuario</option>
                         </select></th>
 

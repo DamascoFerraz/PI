@@ -10,6 +10,14 @@
         $query .= " AND id = ?";
         $params[] = $_GET['id'];
     }
+    if (!empty($_GET['author_id'])) {
+        $query .= " AND author_id = ?";
+        $params[] = $_GET['author_id'];
+    }
+    if (!empty($_GET['article_id'])) {
+        $query .= " AND article_id = ?";
+        $params[] = $_GET['article_id'];
+    }
     if (!empty($_GET['content'])) {
         $query .= " AND content LIKE ?";
         $params[] = "%".$_GET['content']."%";
@@ -18,6 +26,7 @@
         $query .= " AND is_active = ?";
         $params[] = $_GET['is_active'];
     }
+
     if (!empty($_GET['order'])) {
         if ($_GET['order'] === 'crescent') {
             $query .= " ORDER BY creation ASC";

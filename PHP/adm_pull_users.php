@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET)) {
         }
     }
 
-    if (isset($_GET['position']) && !empty($_GET['position'] && in_array($_GET['position'], ['admin', 'editor', 'user']))) {
+    if (isset($_GET['position']) && !empty($_GET['position'] && in_array($_GET['position'], ['administrador', 'professor', 'user']))) {
         if (isset($params)) {
             $search .= "AND position = ? ";
             $params[] = $_GET['position'];
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET)) {
             $params = [$_GET['is_active']];
         }
     }
+
 
     if (isset($_GET['order'] )) {
         if ($_GET['order'] == 'crescent') {

@@ -27,7 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare($query);
         $stmt->execute([$username, $id]);
     }
+    
     // update session data
+    session_start();
     $_SESSION['user']['username'] = $username;
 
     // redirect back to profile page with success message
